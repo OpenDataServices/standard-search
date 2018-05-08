@@ -5,7 +5,7 @@
     vagrant up
     vagrant ssh
     wget --method=PUT -O/tmp/create.index.txt http://localhost:9200/standardsearch
-    PYTHONPATH=$PYTHONPATH:/vagrant/  python3 /vagrant/etl.py
+    PYTHONPATH=$PYTHONPATH:/vagrant/  python3 /vagrant/etl-demo.py
     FLASK_APP=/vagrant/standardsearch/webapp/webapp.py  PYTHONPATH=$PYTHONPATH:/vagrant/  flask run --host=0.0.0.0
 
 Try
