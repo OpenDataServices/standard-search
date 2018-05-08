@@ -10,8 +10,10 @@ def hello():
 
     elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
 
+    query = {"query": {"term": {"text": search}}, "highlight": {"fields": {"text": {}}}}
+
     res = elasticsearchfactory.get().search(index=elasticsearchfactory.index,
-                                            body={"query": {"term": {"text": search}}}
+                                            body=query
                                             )
 
     out = {
@@ -22,6 +24,7 @@ def hello():
         out['results'].append({
             "title": hit['_source']['title'],
             "url": hit['_source']['url'],
+            "highlights": hit['highlight']['text'],
         })
 
     resp = flask.Response(flask.json.dumps(out), status=200, mimetype='application/json')

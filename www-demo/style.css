@@ -14,6 +14,10 @@
     font-weight: bold;
 }
 
+#resultsList .result .highlight {
+    margin: 5px;
+}
+
 #resultsList .result .url {
     font-style: italic;
 }

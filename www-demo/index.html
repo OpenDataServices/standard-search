@@ -44,7 +44,13 @@
                         $('#resultsCount').html('Results: ' + data.count);
                         var html = '';
                         for(idx in data.results) {
-                            html += '<div class="result"><div class="title">'+escapeString(data.results[idx].title)+'</div><div class="url">'+escapeString(data.results[idx].url)+'</div></div>';
+                            html += '<div class="result">';
+                            html += '<div class="title">'+escapeString(data.results[idx].title)+'</div>';
+                            for(hidx in data.results[idx].highlights) {
+                                html += '<div class="highlight">'+data.results[idx].highlights[hidx]+'</div>';
+                            }
+                            html += '<div class="url">'+escapeString(data.results[idx].url)+'</div>';
+                            html += '</div>';
                         }
                         $('#resultsList').html(html);
                         $('#results').show();
