@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import standardsearch.elasticsearchfactory
 
+
 class Scraper:
     elasticsearchfactory = None
 
@@ -19,7 +20,7 @@ class Scraper:
                 'title': soup.title.string,
             }
             self.elasticsearchfactory.get().index(index=self.elasticsearchfactory.index,
-                                     doc_type=self.elasticsearchfactory.doctype,
-                                     id=url,
-                                     body=body
-                                    )
+                                                  doc_type=self.elasticsearchfactory.doctype,
+                                                  id=url,
+                                                  body=body
+                                                  )

@@ -22,6 +22,7 @@ systemctl enable elasticsearch
 
 # Install Python Libs
 pip3 install -r /vagrant/requirements.txt
+pip3 install flake8
 
 # Configure Apache
 cp /vagrant/vagrant/apache.conf  /etc/apache2/sites-enabled/000-default.conf
