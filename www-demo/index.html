@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Demo</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+
+        <h1>Demo</h1>
+
+        <form id="searchForm">
+            <input type="text" name="search">
+            <input type="submit" value="Search">
+        </form>
+
+        <div id="results" style="display: none;">
+            <div id="resultsCount"></div>
+            <div id="resultsList"></div>
+        </div>
+
+        <script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+
+        <script>
+            $( document ).ready(function() {
+                $('#searchForm').submit(function( event ) {
+                    onsubmit();
+                    event.preventDefault();
+                });
+            });
+
+            function escapeString(text) {
+                return $("<div>").text(text).html();
+            }
+
+            function onsubmit() {
+                var term = $('#searchForm input[name="search"]').val();
+                $.ajax({
+                    url: "http://localhost:5000/v1/search?q=" + term,
+                    success: function(data) {
+                        $('#resultsCount').html('Results: ' + data.count);
+                        var html = '';
+                        for(idx in data.results) {
+                            html += '<div class="result"><div class="title">'+escapeString(data.results[idx].title)+'</div><div class="url">'+escapeString(data.results[idx].url)+'</div></div>';
+                        }
+                        $('#resultsList').html(html);
+                        $('#results').show();
+                    }
+                });
+            }
+        </script>
+
+    </body>
+</html>

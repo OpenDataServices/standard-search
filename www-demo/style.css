@@ -1,0 +1,20 @@
+#resultsCount {
+    margin: 20px 0;
+}
+
+#resultsList {
+    margin: 20px 0;
+}
+
+#resultsList .result {
+    margin: 20px 0;
+}
+
+#resultsList .result .title {
+    font-weight: bold;
+}
+
+#resultsList .result .url {
+    font-style: italic;
+}
+
