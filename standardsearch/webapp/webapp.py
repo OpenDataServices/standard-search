@@ -10,7 +10,7 @@ def hello():
 
     elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
 
-    query = {"query": {"term": {"text": search}}, "highlight": {"fields": {"text": {}}}}
+    query = {"query": {"query_string": {"query": search}}, "highlight": {"fields": {"text": {}}}}
 
     res = elasticsearchfactory.get().search(index=elasticsearchfactory.index,
                                             body=query

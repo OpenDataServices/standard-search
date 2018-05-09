@@ -1,15 +1,18 @@
-import standardsearch.etl.process
+import standardsearch.etl.extract
 from standardsearch.etl.sources import Source
+from standardsearch.etl.load import load
 
 
 def main():
-    process = standardsearch.etl.process.Process()
+    extract = standardsearch.etl.extract.Extract()
 
-    process.add_source(Source(url='http://example.com/'))
+    extract.add_source(Source(url='http://example.com/'))
 
-    process.add_source(Source(url='http://opendataservices.coop/'))
+    extract.add_source(Source(url='http://opendataservices.coop/'))
 
-    process.go()
+    extract.go()
+
+    load()
 
 
 if __name__ == '__main__':
