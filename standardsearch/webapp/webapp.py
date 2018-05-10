@@ -10,16 +10,16 @@ def hello():
 
     elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
 
-    query = {"query": {"query_string": {"query": search}}, "highlight": {"fields": {"text": {}}}}
+    query = {"query": {"query_string": {"query": search, "default_field" : "text"}}, "highlight": {"fields": {"text": {}}}}
 
     res = elasticsearchfactory.get().search(index=elasticsearchfactory.index,
-                                            body=query
-                                            )
+                                            body=query, size=100)
 
     out = {
         'results': [],
         'count': res['hits']['total'],
            }
+
     for hit in res['hits']['hits']:
         out['results'].append({
             "title": hit['_source']['title'],

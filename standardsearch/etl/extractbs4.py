@@ -25,5 +25,5 @@ class ExtractBS4:
                 'text': text,
                 'title': soup.title.string,
             }
-            return body
+            return [body]
 

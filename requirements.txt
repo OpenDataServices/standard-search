@@ -2,3 +2,4 @@ beautifulsoup4
 requests
 elasticsearch
 Flask
+html5lib

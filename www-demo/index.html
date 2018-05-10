@@ -4,8 +4,9 @@
         <meta charset="utf-8">
         <title>Demo</title>
         <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="http://standard.open-contracting.org/latest/en/_static/css/theme.css">
     </head>
-    <body>
+    <body class="wy-body-for-nav">
 
         <h1>Demo</h1>
 
@@ -45,9 +46,11 @@
                         var html = '';
                         for(idx in data.results) {
                             html += '<div class="result">';
+                            html += '<a href="'+escapeString(data.results[idx].url)+'">';
                             html += '<div class="title">'+escapeString(data.results[idx].title)+'</div>';
+                            html += '</a>';
                             for(hidx in data.results[idx].highlights) {
-                                html += '<div class="highlight">'+data.results[idx].highlights[hidx]+'</div>';
+                                html += '<div>'+data.results[idx].highlights[hidx]+'</div>';
                             }
                             html += '<div class="url">'+escapeString(data.results[idx].url)+'</div>';
                             html += '</div>';
