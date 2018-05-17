@@ -18,7 +18,7 @@ def extract_section(section):
             if 'section' in part.get('class', []):
                 continue
 
-        lines = (line.strip().rstrip('¶').rstrip("Â") for line in text.splitlines())
+        lines = (line.strip().rstrip('¶') for line in text.splitlines())
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
         text = '\n'.join(chunk for chunk in chunks if chunk)
         all_text.append(text)
@@ -29,6 +29,7 @@ def extract_section(section):
 def extract_page(url):
     r = requests.get(url)
     r.raise_for_status()
+    r.encoding = 'utf-8'
 
     soup = BeautifulSoup(r.text, 'html5lib')
 
@@ -44,7 +45,7 @@ def extract_page(url):
         
         title = soup.title.string.split('—')[0].strip()
 
-        section_title = section.find(['h1', 'h2', 'h3', 'h4', 'h5']).text.rstrip('¶').rstrip("Â")
+        section_title = section.find(['h1', 'h2', 'h3', 'h4', 'h5']).text.rstrip('¶')
 
         if title != section_title:
             title = title + ' - ' + section_title

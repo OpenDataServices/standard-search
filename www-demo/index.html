@@ -3,7 +3,6 @@
     <head>
         <meta charset="utf-8">
         <title>Demo</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
         <link rel="stylesheet" type="text/css" href="http://standard.open-contracting.org/latest/en/_static/css/theme.css">
     </head>
     <body class="wy-body-for-nav">
@@ -15,9 +14,12 @@
             <input type="submit" value="Search">
         </form>
 
-        <div id="results" style="display: none;">
-            <div id="resultsCount"></div>
-            <div id="resultsList"></div>
+
+        <div class="wy-nav-content-wrap">
+          <div id="search-results" style="display: none;">
+              <div id="resultsCount"></div>
+              <ul id="resultsList" class="search"></ul>
+          </div>
         </div>
 
         <script
@@ -45,18 +47,23 @@
                         $('#resultsCount').html('Results: ' + data.count);
                         var html = '';
                         for(idx in data.results) {
-                            html += '<div class="result">';
-                            html += '<a href="'+escapeString(data.results[idx].url)+'">';
-                            html += '<div class="title">'+escapeString(data.results[idx].title)+'</div>';
+                            var split = data.results[idx].url.split('#')
+                            var new_url = split[0] + '?highlight=' + encodeURIComponent(term) + '#' + split[1]
+
+                            html += '<li>';
+                            html += '<a href="'+new_url+'">';
+                            html += escapeString(data.results[idx].title);
                             html += '</a>';
+                            html += '<div class="context">';
+
                             for(hidx in data.results[idx].highlights) {
-                                html += '<div>'+data.results[idx].highlights[hidx]+'</div>';
+                                html += data.results[idx].highlights[hidx] + ' ';
                             }
-                            html += '<div class="url">'+escapeString(data.results[idx].url)+'</div>';
                             html += '</div>';
+                            html += '</li>';
                         }
                         $('#resultsList').html(html);
-                        $('#results').show();
+                        $('#search-results').show();
                     }
                 });
             }
