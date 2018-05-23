@@ -10,10 +10,15 @@ It may even turn out that different methods will be better for different pages.
 In this way, we can work on several alternative methods at once.
 """
 
+this_dir = os.path.dirname(os.path.realpath(__file__))
 
 class Extract:
     sources = []
-    defaultprocess = None
+
+    def __init__(self, extract_file=None):
+        if not extract_file:
+            extract_file = os.path.join(this_dir, '../../extracted_data.json')
+        self.extract_file = extract_file
 
     def add_source(self, source):
         self.sources.append(source)
@@ -23,9 +28,7 @@ class Extract:
         for source in self.sources:
             output.extend(source.extract())
 
-        this_dir = os.path.dirname(os.path.realpath(__file__))
-
-        with open(os.path.join(this_dir, '../../extracted_data.json'), 'w+') as f:
+        with open(self.extract_file, 'w+') as f:
             json.dump(output, f, indent=2, ensure_ascii=False)
 
 

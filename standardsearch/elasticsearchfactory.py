@@ -10,11 +10,10 @@ matters, or what right term is!)"""
 
 
 class ElasticSearchFactory:
-    elasticsearch = None
-    index = 'standardsearch'
     doctype = 'result'
 
-    def __init__(self):
+    def __init__(self, index):
+        self.index = index
         self.elasticsearch = Elasticsearch()
 
     def get(self):

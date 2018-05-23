@@ -7,8 +7,9 @@ app = flask.Flask(__name__)
 @app.route("/v1/search")
 def hello():
     search = flask.request.args.get('q', '')
+    index = flask.request.args.get('index', 'standardsearch')
 
-    elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
+    elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory(index)
 
     query = {"query": {"query_string": {"query": search, "fields" : ["text", "title^3"], "default_operator": "and"}}, "highlight": {"fields": {"text": {}, "title": {}}}}
 
