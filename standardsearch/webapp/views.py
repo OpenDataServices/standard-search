@@ -25,6 +25,7 @@ def search_v1(request):
             "highlights": hit['highlight'].get('text', hit['highlight'].get('title')),
         })
 
-    resp = flask.Response(flask.json.dumps(out), status=200, mimetype='application/json')
+
+    resp = JsonResponse(out)
     resp['Access-Control-Allow-Origin'] = '*'
     return resp

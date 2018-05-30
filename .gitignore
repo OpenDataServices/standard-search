@@ -1,4 +1,5 @@
 __pycache__
 /.vagrant
 extracted_data.json
-
+.ve
+db.sqlite3
