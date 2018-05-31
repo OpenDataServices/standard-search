@@ -11,29 +11,37 @@ LANG_MAP = {'en': 'english',
             'es': 'spanish'}
 
 
+def run_scrape(version, langs=('en', 'es', 'fr'), url=None):
+
+    if not url:
+        url = 'http://standard.open-contracting.org/{}/'.format(version)
+
+    for lang in langs:
+        lang_url = url.rstrip('/') + '/' + lang + '/'
+        es_index = 'ocds-doc-search-{}-{}'.format(version, lang)
+        extract = standardsearch.etl.extract.Extract()
+        extract.add_source(Source(url=lang_url, extractor=ExtractSphinx))
+        extract.go()
+        load(es_index=es_index, language=LANG_MAP.get(lang, 'standard'))
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Script to learn basic argparse')
     parser.add_argument('-v', '--version',
                         help='OCDS Version',
                         required='True')
-    parser.add_argument('-l', '--lang',
-                        help='Two letter language code',
-                        required='True')
+    parser.add_argument('-l', '--langs',
+                        help='Two letter languages codes seperated by a comma ,',
+                        default='en,fr,es')
     parser.add_argument('-u', '--url',
-                        help='Doc url endpoint to scrape docs',
+                        help='Doc url enpoint(without language part) to scrape docs',
                         default='')
 
     args = parser.parse_args()
 
-    es_index = 'ocds-doc-search-{}-{}'.format(args.version, args.lang)
+    langs = [lang.strip() for lang in  args.langs.split(',')]
 
-    url = args.url
-    if not args.url:
-        url = 'http://standard.open-contracting.org/{}/{}/'.format(args.version, args.lang)
+    run_scrape(args.version, langs, args.url)
 
-    extract = standardsearch.etl.extract.Extract()
-    extract.add_source(Source(url=url, extractor=ExtractSphinx))
-    extract.go()
-    load(es_index=es_index, language=LANG_MAP.get(args.lang, 'standard'))
 
 
