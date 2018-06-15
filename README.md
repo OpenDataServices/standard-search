@@ -5,7 +5,7 @@
     vagrant up
     vagrant ssh
     cd /vagrant
-    python manage.py runserver 0.0.0.0:5000
+    python3 manage.py runserver 0.0.0.0:5000
 
 Try
 
