@@ -13,9 +13,9 @@ In this way, we can work on several alternative methods at once.
 this_dir = os.path.dirname(os.path.realpath(__file__))
 
 class Extract:
-    sources = []
 
     def __init__(self, extract_file=None):
+        self.sources = []
         if not extract_file:
             extract_file = os.path.join(this_dir, '../../extracted_data.json')
         self.extract_file = extract_file

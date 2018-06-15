@@ -26,7 +26,7 @@ def extract_section(section):
     return "\n".join(all_text), section_id
 
 
-def extract_page(url):
+def extract_page(url, base_url):
     r = requests.get(url)
     r.raise_for_status()
     r.encoding = 'utf-8'
@@ -52,6 +52,7 @@ def extract_page(url):
 
         body = {
             'url': url + '#' + section_id,
+            'base_url': base_url,
             'text': text,
             'title': title,
         }
@@ -70,12 +71,12 @@ class ExtractSphinx:
     def process(self, source):
         results = []
         last_url = source.url
-        page_results, next_url = extract_page(source.url)
+        page_results, next_url = extract_page(source.url, source.url)
         results.extend(page_results)
 
         while next_url:
             full_next_url = urljoin(last_url, next_url)
-            page_results, next_url = extract_page(urljoin(last_url, next_url))
+            page_results, next_url = extract_page(urljoin(last_url, next_url), source.url)
             results.extend(page_results)
             last_url = full_next_url
         return results

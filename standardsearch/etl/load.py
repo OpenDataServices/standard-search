@@ -9,7 +9,7 @@ import standardsearch.elasticsearchfactory
 this_dir = os.path.dirname(os.path.realpath(__file__))
 
 
-def load(es_index='standardsearch', language="english", extract_file=None):
+def load(language="english", base_url=None, extract_file=None):
 
     if not extract_file:
         extract_file = os.path.join(this_dir, '../../extracted_data.json')
@@ -22,15 +22,22 @@ def load(es_index='standardsearch', language="english", extract_file=None):
             "properties": {
                 "text": {"type": "text", "analyzer": language},
                 "title": {"type": "text", "analyzer": language},
+                "base_url": {"type": "keyword"},
             }
         }
     }
 
-    elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory(es_index)
+    elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
     elasticsearch = elasticsearchfactory.elasticsearch
+    es_index = elasticsearchfactory.index
 
-    elasticsearch.indices.delete(index=es_index, ignore=[400, 404])
-    elasticsearch.indices.create(index=es_index, body={"mappings": mappings})
+    if not elasticsearch.indices.exists(es_index):
+        elasticsearch.indices.create(index=es_index, body={"mappings": mappings})
+
+    elasticsearch.delete_by_query(index=es_index,
+                                  doc_type='results',
+                                  body={"query": {"term": {"base_url": base_url}}})
+
     with open(extract_file) as f:
         results = json.load(f)
 

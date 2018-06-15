@@ -4,11 +4,24 @@ import standardsearch.elasticsearchfactory
 
 def search_v1(request):
     search = request.GET.get('q', '')
-    index = request.GET.get('index', 'standardsearch')
+    base_url = request.GET.get('base_url', '')
 
-    elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory(index)
+    elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
 
-    query = {"query": {"query_string": {"query": search, "fields" : ["text", "title^3"], "default_operator": "and"}}, "highlight": {"fields": {"text": {}, "title": {}}}}
+    query = {
+        "query": {
+            "bool": {
+                "must": {
+                    "query_string": {
+                        "query": search, 
+                        "fields" : ["text", "title^3"], "default_operator": "and"
+                    },
+                },
+                "filter": {"term": {"base_url": base_url}},
+            }
+        }, 
+        "highlight": {"fields": {"text": {}, "title": {}}}
+    }
 
     res = elasticsearchfactory.get().search(index=elasticsearchfactory.index,
                                             body=query, size=100)
