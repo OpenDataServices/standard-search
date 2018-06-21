@@ -30,6 +30,7 @@ env = environ.Env(  # set default values and casting
     PIWIK_SITE_ID=(str, ''),
     ALLOWED_HOSTS=(list, []),
     SECRET_KEY=(str, secret_key),
+    OCDS_SECRET=(str, 'change_this_secret_on_production'),
 )
 
 PIWIK = {
@@ -42,6 +43,8 @@ PIWIK = {
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
+
+OCDS_SECRET = env('OCDS_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
