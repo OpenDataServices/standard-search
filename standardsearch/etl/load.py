@@ -9,7 +9,7 @@ import standardsearch.elasticsearchfactory
 this_dir = os.path.dirname(os.path.realpath(__file__))
 
 
-def load(language="english", base_url=None, extract_file=None):
+def load(language="english", base_url=None, extract_file=None, lang_code=None):
 
     if not extract_file:
         extract_file = os.path.join(this_dir, '../../extracted_data.json')
@@ -30,6 +30,8 @@ def load(language="english", base_url=None, extract_file=None):
     elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
     elasticsearch = elasticsearchfactory.elasticsearch
     es_index = elasticsearchfactory.index
+    if lang_code:
+        es_index = es_index + '_' + lang_code
 
     if not elasticsearch.indices.exists(es_index):
         elasticsearch.indices.create(index=es_index, body={"mappings": mappings})

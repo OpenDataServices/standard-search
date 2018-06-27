@@ -8,7 +8,15 @@ def search_v1(request):
     search = request.GET.get('q', '')
     base_url = request.GET.get('base_url', '')
 
+    lang = None
+    split = base_url.rstrip("/").split('/')
+    if split:
+        lang = split[-1]
+
     elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
+    es_index = elasticsearchfactory.index
+    if lang:
+        es_index = es_index + '_' + lang
 
     query = {
         "query": {
@@ -25,7 +33,7 @@ def search_v1(request):
         "highlight": {"fields": {"text": {}, "title": {}}}
     }
 
-    res = elasticsearchfactory.get().search(index=elasticsearchfactory.index,
+    res = elasticsearchfactory.get().search(index=es_index,
                                             body=query, size=100)
 
     out = {
