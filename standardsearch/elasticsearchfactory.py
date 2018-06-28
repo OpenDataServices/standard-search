@@ -12,6 +12,7 @@ matters, or what right term is!)"""
 
 ES_INDEX = os.environ.get("ES_INDEX", "standardsearch")
 
+
 class ElasticSearchFactory:
     doctype = 'result'
 

@@ -9,4 +9,3 @@ class Source:
 
     def extract(self):
         return self.extractor.process(self)
-

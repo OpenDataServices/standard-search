@@ -1,7 +1,6 @@
 import os
 import json
 
-
 """
 Main Process class, that calls specific process classes to do actual work.
 
@@ -11,6 +10,7 @@ In this way, we can work on several alternative methods at once.
 """
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
+
 
 class Extract:
 
@@ -30,6 +30,3 @@ class Extract:
 
         with open(self.extract_file, 'w+') as f:
             json.dump(output, f, indent=2, ensure_ascii=False)
-
-
-

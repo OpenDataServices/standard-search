@@ -1,7 +1,8 @@
 from urllib.parse import urljoin
 
 import requests
-from bs4 import BeautifulSoup, SoupStrainer
+from bs4 import BeautifulSoup
+
 
 def extract_section(section):
     all_text = []
@@ -39,14 +40,14 @@ def extract_page(url, base_url, new_url):
     page_results = []
 
     sections = soup(class_="section")
- 
+
     export_url = url
     if new_url:
         export_url = new_url + url[len(base_url):]
 
     for section in sections:
         text, section_id = extract_section(section)
-        
+
         title = soup.title.string.split('—')[0].strip()
 
         section_title = section.find(['h1', 'h2', 'h3', 'h4', 'h5']).text.rstrip('¶')
@@ -67,11 +68,12 @@ def extract_page(url, base_url, new_url):
     next_url = None
     if next_button:
         next_url = next_button[0].get('href')
-    
+
     return page_results, next_url
 
 
 class ExtractSphinx:
+
     def process(self, source):
         results = []
         last_url = source.url
@@ -84,5 +86,3 @@ class ExtractSphinx:
             results.extend(page_results)
             last_url = full_next_url
         return results
-
-

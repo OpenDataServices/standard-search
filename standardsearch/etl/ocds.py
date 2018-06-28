@@ -28,4 +28,9 @@ def run_scrape(version='latest', langs=('en', 'es', 'fr'), url=None, new_url=Non
             extract = standardsearch.etl.extract.Extract(extract_file)
             extract.add_source(Source(url=lang_url, new_url=new_lang_url, extractor=ExtractSphinx))
             extract.go()
-            load(base_url=(new_lang_url or lang_url), language=LANG_MAP.get(lang, 'standard'), extract_file=extract_file, lang_code=lang)
+            load(
+                base_url=(new_lang_url or lang_url),
+                language=LANG_MAP.get(lang, 'standard'),
+                extract_file=extract_file,
+                lang_code=lang
+            )

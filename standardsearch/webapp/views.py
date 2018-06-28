@@ -23,13 +23,13 @@ def search_v1(request):
             "bool": {
                 "must": {
                     "query_string": {
-                        "query": search, 
-                        "fields" : ["text", "title^3"], "default_operator": "and"
+                        "query": search,
+                        "fields": ["text", "title^3"], "default_operator": "and"
                     },
                 },
                 "filter": {"term": {"base_url": base_url}},
             }
-        }, 
+        },
         "highlight": {"fields": {"text": {}, "title": {}}}
     }
 
@@ -39,7 +39,7 @@ def search_v1(request):
     out = {
         'results': [],
         'count': res['hits']['total'],
-           }
+    }
 
     for hit in res['hits']['hits']:
         out['results'].append({
@@ -48,10 +48,10 @@ def search_v1(request):
             "highlights": hit['highlight'].get('text', hit['highlight'].get('title')),
         })
 
-
     resp = JsonResponse(out)
     resp['Access-Control-Allow-Origin'] = '*'
     return resp
+
 
 def index_ocds(request):
     secret = request.GET.get('secret')
@@ -62,12 +62,11 @@ def index_ocds(request):
     new_url = None
 
     if not secret:
-         error = "Need to supply a secret"
+        error = "Need to supply a secret"
     elif not version:
-         error = "Need to supply a version"
+        error = "Need to supply a version"
     elif secret != settings.OCDS_SECRET:
-         error = "secret not correct"
-
+        error = "secret not correct"
 
     if not error:
         url = 'http://standard.open-contracting.org/{}/'.format(version)

@@ -55,8 +55,6 @@ RAVEN_CONFIG = {
     'dsn': env('SENTRY_DSN')
 }
 
-
-
 # Application definition
 
 INSTALLED_APPS = [

@@ -24,6 +24,13 @@ systemctl enable elasticsearch
 pip3 install -r /vagrant/requirements.txt
 pip3 install flake8
 
+# Install standard docs
+git clone https://github.com/open-contracting/standard.git
+cd standard
+pip3 install -r requirements.txt
+sed -i 's/www.standard-search.default.opendataservices.uk0.bigv.io/localhost:5000/g' src/standard-theme/standard_theme/static/js/search.js
+make
+
 # Configure Apache
 cp /vagrant/vagrant/apache.conf  /etc/apache2/sites-enabled/000-default.conf
 /etc/init.d/apache2 restart

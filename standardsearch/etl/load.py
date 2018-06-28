@@ -1,10 +1,7 @@
 import os
 import json
-import copy
 
-from elasticsearch import Elasticsearch
 import standardsearch.elasticsearchfactory
-
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -48,4 +45,3 @@ def load(language="english", base_url=None, extract_file=None, lang_code=None):
                                 doc_type='results',
                                 id=result['url'],
                                 body=result)
-
