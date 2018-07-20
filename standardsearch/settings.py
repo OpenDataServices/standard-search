@@ -67,6 +67,9 @@ INSTALLED_APPS = [
     'standardsearch.webapp',
 ]
 
+if env('SENTRY_DSN'):
+    INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
