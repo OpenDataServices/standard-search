@@ -9,7 +9,7 @@ if __name__ == '__main__':
                         help='OCDS Version')
     parser.add_argument('-l', '--langs',
                         help='Two letter languages codes seperated by a comma ,',
-                        default='en,fr,es')
+                        default='en,fr,es,it')
     parser.add_argument('-u', '--url',
                         help='Doc url enpoint(without language part) to scrape docs',
                         default='')

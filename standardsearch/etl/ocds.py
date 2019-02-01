@@ -9,7 +9,8 @@ from standardsearch.etl.extract_sphinx import ExtractSphinx
 
 LANG_MAP = {'en': 'english',
             'fr': 'french',
-            'es': 'spanish'}
+            'es': 'spanish',
+            'it': 'italian'}
 
 
 def run_scrape(version='latest', langs=('en', 'es', 'fr'), url=None, new_url=None):
