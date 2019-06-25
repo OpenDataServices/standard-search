@@ -19,9 +19,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    langs = [lang.strip() for lang in  args.langs.split(',')]
+    langs = [lang.strip() for lang in args.langs.split(',')]
 
     run_scrape(args.version or 'latest', langs, args.url, new_url=args.newurl)
-
-
-
