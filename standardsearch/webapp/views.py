@@ -8,6 +8,13 @@ def search_v1(request):
     search = request.GET.get('q', '')
     base_url = request.GET.get('base_url', '')
 
+    # We use base_url to decide which set of documents to search,
+    # .... but that can be on http or https, it should be the same documents on both!
+    # In our data store, we store everything with a base_url with an http address,
+    # ..... so if we get a request with https, change it!
+    if base_url.startswith('https://'):
+        base_url = 'http' + base_url[5:]
+
     lang = None
     split = base_url.rstrip("/").split('/')
     if split:
