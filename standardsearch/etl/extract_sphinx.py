@@ -39,7 +39,7 @@ def extract_page(url, base_url, new_url):
 
     page_results = []
 
-    sections = soup(class_="section")
+    sections = soup("div", class_="section")
 
     export_url = url
     if new_url:
