@@ -64,6 +64,9 @@ def index_ocds(request):
     secret = request.GET.get('secret')
     version = request.GET.get('version')
     index_version = request.GET.get('index_version')
+    # These were the default languages at the point this parameter was introduced, so keep them as the default
+    langs_raw = request.GET.get('langs', 'en,es,fr')
+    langs = [lang.strip() for lang in langs_raw.split(',')]
 
     error = None
     new_url = None
@@ -80,7 +83,7 @@ def index_ocds(request):
         if index_version:
             new_url = 'http://standard.open-contracting.org/{}/'.format(index_version)
         try:
-            ocds_run_scrape(version=version, url=url, new_url=new_url)
+            ocds_run_scrape(version=version, url=url, new_url=new_url, langs=langs)
         except Exception as e:
             error = str(e)
 
