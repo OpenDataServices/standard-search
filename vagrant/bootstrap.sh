@@ -6,6 +6,8 @@ set -e
 apt-get update
 apt-get install -y apt-transport-https openjdk-8-jre python3-pip apache2
 
+pip3 install virtualenv
+
 # Add Elasticsearch repo and install
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 
@@ -20,16 +22,22 @@ echo "network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml
 
 systemctl enable elasticsearch
 
-# Install Python Libs
-pip3 install -r /vagrant/requirements.txt
-pip3 install flake8
+# Install Virtenv and Python Libs
+cd /vagrant
+virtualenv .ve -p python3
+source .ve/bin/activate
+pip3 install -r /vagrant/requirements_dev.txt
+deactivate
 
-# Install standard docs
-git clone https://github.com/open-contracting/standard.git
-cd standard
+# Install standard docs (using virtualenv)
+git clone https://github.com/open-contracting/standard.git /home/vagrant/standard
+cd /home/vagrant/standard
+virtualenv .ve -p python3
+source .ve/bin/activate
 pip3 install -r requirements.txt
-sed -i 's/www.standard-search.default.opendataservices.uk0.bigv.io/localhost:5000/g' src/standard-theme/standard_theme/static/js/search.js
+sed -i 's/standard-search.open-contracting.org/localhost:5000/g' .ve/src/standard-theme/standard_theme/static/js/search.js
 make
+deactivate
 
 # Configure Apache
 cp /vagrant/vagrant/apache.conf  /etc/apache2/sites-enabled/000-default.conf
