@@ -1,6 +1,6 @@
 beautifulsoup4
 requests
-elasticsearch
+elasticsearch==6.4.0
 html5lib
 django
 django-environ
