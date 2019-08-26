@@ -2,11 +2,16 @@ import os
 import json
 
 import standardsearch.elasticsearchfactory
+from standardsearch.utils import get_http_version_of_url
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def load(language="english", base_url=None, extract_file=None, lang_code=None):
+
+    # In our data store, we store everything with a base_url with an http address,
+    # ..... so if we get a request with https, change it!
+    base_url = get_http_version_of_url(base_url)
 
     if not extract_file:
         extract_file = os.path.join(this_dir, '../../extracted_data.json')
@@ -41,6 +46,7 @@ def load(language="english", base_url=None, extract_file=None, lang_code=None):
         results = json.load(f)
 
         for result in results:
+            result['base_url'] = get_http_version_of_url(result['base_url'])
             elasticsearch.index(index=es_index,
                                 doc_type='results',
                                 id=result['url'],
