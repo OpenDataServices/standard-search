@@ -79,9 +79,9 @@ def index_ocds(request):
         error = "secret not correct"
 
     if not error:
-        url = 'http://standard.open-contracting.org/{}/'.format(version)
+        url = 'https://standard.open-contracting.org/{}/'.format(version)
         if index_version:
-            new_url = 'http://standard.open-contracting.org/{}/'.format(index_version)
+            new_url = 'https://standard.open-contracting.org/{}/'.format(index_version)
         try:
             ocds_run_scrape(version=version, url=url, new_url=new_url, langs=langs)
         except Exception as e:
