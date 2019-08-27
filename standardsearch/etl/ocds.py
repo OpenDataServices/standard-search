@@ -16,7 +16,7 @@ LANG_MAP = {'en': 'english',
 def run_scrape(version='latest', langs=('en', 'es', 'fr'), url=None, new_url=None):
 
     if not url:
-        url = 'http://standard.open-contracting.org/{}/'.format(version)
+        url = 'https://standard.open-contracting.org/{}/'.format(version)
 
     for lang in langs:
         lang_url = url.rstrip('/') + '/' + lang + '/'

@@ -2,6 +2,7 @@ from django.http import JsonResponse
 import standardsearch.elasticsearchfactory
 from standardsearch.etl.ocds import run_scrape as ocds_run_scrape
 from django.conf import settings
+from standardsearch.utils import get_http_version_of_url
 
 
 def search_v1(request):
@@ -12,8 +13,7 @@ def search_v1(request):
     # .... but that can be on http or https, it should be the same documents on both!
     # In our data store, we store everything with a base_url with an http address,
     # ..... so if we get a request with https, change it!
-    if base_url.startswith('https://'):
-        base_url = 'http' + base_url[5:]
+    base_url = get_http_version_of_url(base_url)
 
     lang = None
     split = base_url.rstrip("/").split('/')
@@ -79,9 +79,9 @@ def index_ocds(request):
         error = "secret not correct"
 
     if not error:
-        url = 'http://standard.open-contracting.org/{}/'.format(version)
+        url = 'https://standard.open-contracting.org/{}/'.format(version)
         if index_version:
-            new_url = 'http://standard.open-contracting.org/{}/'.format(index_version)
+            new_url = 'https://standard.open-contracting.org/{}/'.format(index_version)
         try:
             ocds_run_scrape(version=version, url=url, new_url=new_url, langs=langs)
         except Exception as e:
