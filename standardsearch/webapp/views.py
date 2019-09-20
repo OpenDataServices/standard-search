@@ -90,7 +90,7 @@ def index_ocds(request):
     if error:
         resp = JsonResponse({"error": error})
     else:
-        resp = JsonResponse({"sucess": True})
+        resp = JsonResponse({"success": True})
 
     resp['Access-Control-Allow-Origin'] = '*'
     return resp
