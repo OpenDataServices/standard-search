@@ -14,7 +14,7 @@ ES_INDEX = os.environ.get("ES_INDEX", "standardsearch")
 
 
 class ElasticSearchFactory:
-    doctype = 'result'
+    doctype = "result"
 
     def __init__(self):
         self.index = ES_INDEX

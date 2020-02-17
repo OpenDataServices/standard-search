@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 """
 Main Process class, that calls specific process classes to do actual work.
@@ -13,11 +13,10 @@ this_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 class Extract:
-
     def __init__(self, extract_file=None):
         self.sources = []
         if not extract_file:
-            extract_file = os.path.join(this_dir, '../../extracted_data.json')
+            extract_file = os.path.join(this_dir, "../../extracted_data.json")
         self.extract_file = extract_file
 
     def add_source(self, source):
@@ -28,5 +27,5 @@ class Extract:
         for source in self.sources:
             output.extend(source.extract())
 
-        with open(self.extract_file, 'w+') as f:
+        with open(self.extract_file, "w+") as f:
             json.dump(output, f, indent=2, ensure_ascii=False)
