@@ -54,7 +54,11 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
-RAVEN_CONFIG = {"dsn": env("SENTRY_DSN")}
+if env("SENTRY_DSN"):
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(dsn=env("SENTRY_DSN"), integrations=[DjangoIntegration()])
 
 # Application definition
 
@@ -67,9 +71,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "standardsearch.webapp",
 ]
-
-if env("SENTRY_DSN"):
-    INSTALLED_APPS += ("raven.contrib.django.raven_compat",)
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -151,7 +152,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
-    "root": {"level": "WARNING", "handlers": ["sentry"],},
+    "root": {"level": "WARNING", "handlers": ["console"],},
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
@@ -159,10 +160,6 @@ LOGGING = {
         },
     },
     "handlers": {
-        "sentry": {
-            "level": "ERROR",
-            "class": "raven.contrib.django.raven_compat.handlers.SentryHandler",
-        },
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
@@ -172,12 +169,6 @@ LOGGING = {
     "loggers": {
         "django.db.backends": {
             "level": "ERROR",
-            "handlers": ["console"],
-            "propagate": False,
-        },
-        "raven": {"level": "DEBUG", "handlers": ["console"], "propagate": False,},
-        "sentry.errors": {
-            "level": "DEBUG",
             "handlers": ["console"],
             "propagate": False,
         },

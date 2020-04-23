@@ -4,4 +4,4 @@ elasticsearch==6.4.0
 html5lib
 django
 django-environ
-raven
+sentry-sdk
