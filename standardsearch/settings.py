@@ -168,9 +168,7 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        "null": {
-             "class": "logging.NullHandler",
-         },
+        "null": {"class": "logging.NullHandler",},
     },
     "loggers": {
         "django.db.backends": {
@@ -184,9 +182,6 @@ LOGGING = {
             "handlers": ["console"],
             "propagate": False,
         },
-       "django.security.DisallowedHost": {
-            "handlers": ["null"],
-            "propagate": False,
-        },
+        "django.security.DisallowedHost": {"handlers": ["null"], "propagate": False,},
     },
 }
