@@ -59,11 +59,8 @@ if env("SENTRY_DSN"):
     from sentry_sdk.integrations.django import DjangoIntegration
     from sentry_sdk.integrations.logging import ignore_logger
 
-    ignore_logger('django.security.DisallowedHost')
-    sentry_sdk.init(
-        dsn=env("SENTRY_DSN"),
-        integrations=[DjangoIntegration()]
-    )
+    ignore_logger("django.security.DisallowedHost")
+    sentry_sdk.init(dsn=env("SENTRY_DSN"), integrations=[DjangoIntegration()])
 
 # Application definition
 

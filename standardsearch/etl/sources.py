@@ -1,4 +1,4 @@
-import standardsearch.etl.extractbs4 as extractbs4
+from standardsearch.etl import extractbs4 as extractbs4
 
 
 class Source:
