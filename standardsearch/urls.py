@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 
-import standardsearch.webapp.views as views
+from standardsearch.webapp import views
 
 urlpatterns = [
     url("^v1/search$", views.search_v1, name="search_v1"),
