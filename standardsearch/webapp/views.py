@@ -90,7 +90,7 @@ def index_ocds(request):
         try:
             ocds_run_scrape(version=version, url=url, new_url=new_url, langs=langs)
         except Exception as e:
-            error = str(e)
+            error = "{} while retrieving {}".format(e, url)
 
     if error:
         resp = JsonResponse({"error": error})
