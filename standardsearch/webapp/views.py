@@ -2,8 +2,58 @@ from elasticsearch import Elasticsearch
 from django.conf import settings
 from django.http import JsonResponse
 
-from standardsearch.ocds import run_scrape
-from standardsearch.utils import get_http_version_of_url
+from standardsearch.extract_sphinx import process
+
+LANG_MAP = {"en": "english", "fr": "french", "es": "spanish", "it": "italian"}
+
+
+def _append_lang_code(url, language_code):
+    return f"{url.rstrip('/')}/{language_code}/"
+
+
+def _get_http_version_of_url(url):
+    if url.startswith("https://"):
+        return "http" + url[5:]
+    else:
+        return url
+
+
+def _load(language, base_url, results, language_code):
+    elasticsearch = Elasticsearch()
+    es_index = "standardsearch_{}".format(language_code)
+    doc_type = "results"
+
+    if not elasticsearch.indices.exists(es_index):
+        elasticsearch.indices.create(index=es_index, body={
+            "mappings": {
+                doc_type: {
+                    "_all": {"analyzer": language},
+                    "properties": {
+                        "text": {"type": "text", "analyzer": language},
+                        "title": {"type": "text", "analyzer": language},
+                        "base_url": {"type": "keyword"},
+                    },
+                },
+            },
+        })
+
+    elasticsearch.delete_by_query(
+        index=es_index,
+        doc_type=doc_type,
+        # In our data store, we store everything with a base_url with an http address,
+        # ..... so if we get a request with https, change it!
+        body={"query": {"term": {"base_url": _get_http_version_of_url(base_url)}}},
+    )
+
+    for result in results:
+        result["base_url"] = _get_http_version_of_url(result["base_url"])
+        elasticsearch.index(index=es_index, doc_type=doc_type, id=result["url"], body=result)
+
+
+def _respond(content):
+    resp = JsonResponse(content)
+    resp["Access-Control-Allow-Origin"] = "*"
+    return resp
 
 
 def search_v1(request):
@@ -14,7 +64,7 @@ def search_v1(request):
     # .... but that can be on http or https, it should be the same documents on both!
     # In our data store, we store everything with a base_url with an http address,
     # ..... so if we get a request with https, change it!
-    base_url = get_http_version_of_url(base_url)
+    base_url = _get_http_version_of_url(base_url)
 
     lang = None
     split = base_url.rstrip("/").split("/")
@@ -25,7 +75,7 @@ def search_v1(request):
     if lang:
         es_index = es_index + "_" + lang
 
-    query = {
+    res = Elasticsearch().search(index=es_index, size=100, body={
         "query": {
             "bool": {
                 "must": {
@@ -39,17 +89,15 @@ def search_v1(request):
             }
         },
         "highlight": {"fields": {"text": {}, "title": {}}},
-    }
+    })
 
-    res = Elasticsearch().search(index=es_index, body=query, size=100)
-
-    out = {
+    content = {
         "results": [],
         "count": res["hits"]["total"],
     }
 
     for hit in res["hits"]["hits"]:
-        out["results"].append(
+        content["results"].append(
             {
                 "title": hit["_source"]["title"],
                 "url": hit["_source"]["url"],
@@ -59,38 +107,47 @@ def search_v1(request):
             }
         )
 
-    resp = JsonResponse(out)
-    resp["Access-Control-Allow-Origin"] = "*"
-    return resp
+    return _respond(content)
 
 
 def index_ocds(request):
     secret = request.GET.get("secret")
     version = request.GET.get("version")
-    index_version = request.GET.get("index_version")
-    # These were the default languages at the point this parameter was introduced, so keep them as the default
-    langs_raw = request.GET.get("langs", "en,es,fr")
-    langs = [lang.strip() for lang in langs_raw.split(",")]
+    langs = request.GET.get("langs")
 
-    error = None
+    error_message = None
     if not secret:
-        error = "Need to supply a secret"
+        error_message = "Need to supply secret"
     elif not version:
-        error = "Need to supply a version"
+        error_message = "Need to supply version"
+    elif not langs:
+        error_message = "Need to supply langs"
     elif secret != settings.OCDS_SECRET:
-        error = "secret not correct"
+        error_message = "secret not correct"
 
-    if error:
-        resp = JsonResponse({"error": error})
+    if error_message:
+        return _respond({"error": error_message})
+
+    url = "https://standard.open-contracting.org/{}/".format(version)
+
+    index_version = request.GET.get("index_version")
+    if index_version:
+        new_url = "https://standard.open-contracting.org/{}/".format(index_version)
     else:
-        resp = JsonResponse({"success": True})
+        new_url = None
 
-        url = "https://standard.open-contracting.org/{}/".format(version)
-        if index_version:
-            new_url = "https://standard.open-contracting.org/{}/".format(index_version)
+    for language_code in langs.split(","):
+        language_code = language_code.strip()
+
+        lang_url = _append_lang_code(url, language_code)
+        if new_url:
+            new_lang_url = _append_lang_code(new_url, language_code)
+            base_url = new_lang_url
         else:
-            new_url = None
-        run_scrape(version, langs, url, new_url)
+            new_lang_url = None
+            base_url = lang_url
 
-    resp["Access-Control-Allow-Origin"] = "*"
-    return resp
+        results = process(lang_url, new_lang_url)
+        _load(LANG_MAP.get(language_code, "standard"), base_url, results, language_code)
+
+    return _respond({"success": True})
