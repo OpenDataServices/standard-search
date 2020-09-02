@@ -4,7 +4,7 @@
 
 Standard Search is a web app in front of Elasticsearch. 
 
-It can be called via the API or command line and made to index a Sphinx documentation website. 
+It can be called via the API and made to index a Sphinx documentation website. 
 (There is a basic security mechanism on the API to prevent abuse.)
 
 There is then another API that Javascript widgets can call to get search results, 
