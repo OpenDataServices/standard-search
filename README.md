@@ -31,47 +31,6 @@ You can thus put up a preview version of a website, index that but rewrite the U
 and then launch the real website - and search will work right from the start.
 
 
-### Via Command line tool
-
-Available at `ocds-doc-search-cli.py`.
-
-You can pass:
-
-* `-l`, `--langs`. Two letter languages codes separated by a comma. These langs will be added to the end of the constructed URL. 
-* `-u`, `--url`. The base URL to scrape. Note this MUST be the full URL.
-* `-n`, `--newurl`. Optional. The URL to rewrite to. Note this MUST be the full URL.
-
-(There is also a `version` flag that can be used instead of `url`, but this gets confusing so we are going to ignore it in these docs.)
-
-The URL's passed should be passed without a language string. All the languages you pass will then be added to the end and indexed separately. 
-
-#### Example 1
-
-Pass:
-
-* `url`: `https://standard.open-contracting.org/latest/`
-* `langs`: `en,es`
-
-The website will then index `https://standard.open-contracting.org/latest/en/` and `https://standard.open-contracting.org/latest/en/`.
-
-#### Example 2
-
-If you want to index a beta build as the latest, pass:
-
-* `url`: `https://standard.open-contracting.org/beta/`
-* `newurl`: `https://standard.open-contracting.org/latest/`
-* `langs`: `en,es`
-
-#### Example 3
-
-If you want to index a profile, pass the profile as part of the URL:
-
-Pass:
-
-* `url`: `https://standard.open-contracting.org/profiles/ppp/latest`
-* `langs`: `en,es`
-
-
 ### Via API 
 
 Call `/v1/index_ocds` to index a website.
