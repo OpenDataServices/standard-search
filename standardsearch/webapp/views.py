@@ -71,7 +71,7 @@ def search_v1(request):
     if split:
         lang = split[-1]
 
-    es_index = 'standardsearch'
+    es_index = "standardsearch"
     if lang:
         es_index = es_index + "_" + lang
 

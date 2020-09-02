@@ -11,7 +11,6 @@ def extract_section(section):
     section_id = section["id"]
 
     for part in all_parts:
-
         if isinstance(part, str):
             text = str(part)
         else:
@@ -46,6 +45,9 @@ def extract_page(url, base_url, new_url):
         export_url = new_url + url[len(base_url) :]
 
     for section in sections:
+        if "expandjson" in section['class']:
+            continue
+
         text, section_id = extract_section(section)
 
         title = soup.title.string.split("—")[0].strip()
@@ -83,4 +85,5 @@ def process(url, new_url):
         page_results, next_url = extract_page(urljoin(last_url, next_url), url, new_url)
         results.extend(page_results)
         last_url = full_next_url
+
     return results
