@@ -82,19 +82,15 @@ def index_ocds(request):
     elif secret != settings.OCDS_SECRET:
         error = "secret not correct"
 
-    if not error:
-        url = "https://standard.open-contracting.org/{}/".format(version)
-        if index_version:
-            new_url = "https://standard.open-contracting.org/{}/".format(index_version)
-        try:
-            run_scrape(version=version, url=url, new_url=new_url, langs=langs)
-        except Exception as e:
-            error = "{} while retrieving {}".format(e, url)
-
     if error:
         resp = JsonResponse({"error": error})
     else:
         resp = JsonResponse({"success": True})
+
+        url = "https://standard.open-contracting.org/{}/".format(version)
+        if index_version:
+            new_url = "https://standard.open-contracting.org/{}/".format(index_version)
+        run_scrape(version=version, url=url, new_url=new_url, langs=langs)
 
     resp["Access-Control-Allow-Origin"] = "*"
     return resp
