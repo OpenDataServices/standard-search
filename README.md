@@ -140,24 +140,3 @@ If a request was made to index a HTTP site, but a user searches against a HTTPS 
 It is currently set up for OCDS. 
 
 This can be extended for other standards, but at this time we may also try to work out a generic set of interfaces.
-
-## Vagrant for developers
-
-A Vagrant box is provided for developers. 
-
-This also builds a static version of the OCDS standard, so you can test it against a development website you can control.
-
-NOTE: This is not in full working order and needs tweaks! See pull request. 
-
-    vagrant up
-    vagrant ssh
-    cd /vagrant
-    python3 ocds-doc-search-cli.py -u http://localhost:6060/   # this indexes to elasticsearch
-    python3 manage.py runserver 0.0.0.0:5000
-
-Try this on the host.
-
-  *  http://localhost:6060/en
-  *  http://localhost:6060/fr
-  *  http://localhost:6060/es
-
