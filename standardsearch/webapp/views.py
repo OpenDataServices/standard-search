@@ -1,7 +1,7 @@
+from elasticsearch import Elasticsearch
 from django.conf import settings
 from django.http import JsonResponse
 
-import standardsearch.elasticsearchfactory
 from standardsearch.etl.ocds import run_scrape as ocds_run_scrape
 from standardsearch.utils import get_http_version_of_url
 
@@ -21,8 +21,7 @@ def search_v1(request):
     if split:
         lang = split[-1]
 
-    elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
-    es_index = elasticsearchfactory.index
+    es_index = 'standardsearch'
     if lang:
         es_index = es_index + "_" + lang
 
@@ -42,7 +41,7 @@ def search_v1(request):
         "highlight": {"fields": {"text": {}, "title": {}}},
     }
 
-    res = elasticsearchfactory.get().search(index=es_index, body=query, size=100)
+    res = Elasticsearch().search(index=es_index, body=query, size=100)
 
     out = {
         "results": [],

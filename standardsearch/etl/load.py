@@ -1,7 +1,8 @@
 import json
 import os
 
-import standardsearch.elasticsearchfactory
+from elasticsearch import Elasticsearch
+
 from standardsearch.utils import get_http_version_of_url
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
@@ -27,9 +28,8 @@ def load(language="english", base_url=None, extract_file=None, lang_code=None):
         }
     }
 
-    elasticsearchfactory = standardsearch.elasticsearchfactory.ElasticSearchFactory()
-    elasticsearch = elasticsearchfactory.elasticsearch
-    es_index = elasticsearchfactory.index
+    elasticsearch = Elasticsearch()
+    es_index = 'standardsearch'
     if lang_code:
         es_index = es_index + "_" + lang_code
 
