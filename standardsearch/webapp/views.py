@@ -66,10 +66,11 @@ def search_v1(request):
     # ..... so if we get a request with https, change it!
     base_url = _get_http_version_of_url(base_url)
 
-    lang = None
     split = base_url.rstrip("/").split("/")
     if split:
         lang = split[-1]
+    else:
+        lang = None
 
     es_index = "standardsearch"
     if lang:
@@ -80,7 +81,7 @@ def search_v1(request):
             "bool": {
                 "must": {
                     "query_string": {
-                        "query": search,
+                        "query": q,
                         "fields": ["text", "title^3"],
                         "default_operator": "and",
                     },
