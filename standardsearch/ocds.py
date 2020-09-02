@@ -2,8 +2,8 @@ import json
 import os
 import tempfile
 
-from standardsearch.etl.extract_sphinx import ExtractSphinx
-from standardsearch.etl.load import load
+from standardsearch.extract_sphinx import ExtractSphinx
+from standardsearch.load import load
 
 LANG_MAP = {"en": "english", "fr": "french", "es": "spanish", "it": "italian"}
 this_dir = os.path.dirname(os.path.realpath(__file__))

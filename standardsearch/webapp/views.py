@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 from django.conf import settings
 from django.http import JsonResponse
 
-from standardsearch.etl.ocds import run_scrape
+from standardsearch.ocds import run_scrape
 from standardsearch.utils import get_http_version_of_url
 
 
