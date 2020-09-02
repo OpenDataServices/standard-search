@@ -12,8 +12,6 @@ and in that way provide a search function on Sphinx documentation websites.
 
 It understands the output of Sphinx, and cleverly extracts things like sections.
 
-It currently has functions specific to OCDS, but it can easily be made to work for other standards.
-
 ## Technical requirements
 
 * A Django app web server
@@ -30,7 +28,6 @@ The feature `newurl` or `index_version` can be used to fix that; this will let y
 You can thus put up a preview version of a website, index that but rewrite the URL's to be as they will be at launch, 
 and then launch the real website - and search will work right from the start.
 
-
 ### Via API 
 
 Call `/v1/index_ocds` to index a website.
@@ -43,7 +40,6 @@ You can pass:
 * `version`: The bit of the URL to version, or the bit of the URL to rewrite to. Do NOT pass a full URL.
 * `index_version`: Optional. The bit of the URL to actually index. Do NOT pass a full URL.
 * `langs`: Two letter languages codes separated by a comma. These langs will be added to the end of the constructed URL. 
-
 
 #### Example 1
 
@@ -93,9 +89,3 @@ Pass:
 The software assumes the content on the HTTP and HTTPS versions of a website are the same.
 
 If a request was made to index a HTTP site, but a user searches against a HTTPS (or vice versa), that should not matter and it should just work.
-
-## Adding other sources
-
-It is currently set up for OCDS. 
-
-This can be extended for other standards, but at this time we may also try to work out a generic set of interfaces.
