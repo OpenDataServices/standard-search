@@ -1,0 +1,7 @@
+beautifulsoup4
+django
+django-environ
+elasticsearch<7
+html5lib
+requests
+sentry-sdk
