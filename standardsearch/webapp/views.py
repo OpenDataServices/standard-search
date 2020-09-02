@@ -73,8 +73,6 @@ def index_ocds(request):
     langs = [lang.strip() for lang in langs_raw.split(",")]
 
     error = None
-    new_url = None
-
     if not secret:
         error = "Need to supply a secret"
     elif not version:
@@ -90,7 +88,9 @@ def index_ocds(request):
         url = "https://standard.open-contracting.org/{}/".format(version)
         if index_version:
             new_url = "https://standard.open-contracting.org/{}/".format(index_version)
-        run_scrape(version=version, url=url, new_url=new_url, langs=langs)
+        else:
+            new_url = None
+        run_scrape(version, langs, url, new_url)
 
     resp["Access-Control-Allow-Origin"] = "*"
     return resp

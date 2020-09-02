@@ -1,71 +1,59 @@
 import json
 import os
-import tempfile
 
-from standardsearch.extract_sphinx import ExtractSphinx
-from standardsearch.load import load
+from elasticsearch import Elasticsearch
+
+from standardsearch.extract_sphinx import process
+from standardsearch.utils import get_http_version_of_url
 
 LANG_MAP = {"en": "english", "fr": "french", "es": "spanish", "it": "italian"}
 this_dir = os.path.dirname(os.path.realpath(__file__))
 
 
-class Extract:
-    """
-    Main Process class, that calls specific process classes to do actual work.
-
-    The reason for this is that it's not clear at this stage which method will field the best results (bs4, lxml, etc).
-    It may even turn out that different methods will be better for different pages. In this way, we can work on several
-    alternative methods at once.
-    """
-    def __init__(self, extract_file=None):
-        self.sources = []
-        if not extract_file:
-            extract_file = os.path.join(this_dir, "../../extracted_data.json")
-        self.extract_file = extract_file
-
-    def add_source(self, source):
-        self.sources.append(source)
-
-    def go(self):
-        output = []
-        for source in self.sources:
-            output.extend(source.extract())
-
-        with open(self.extract_file, "w+") as f:
-            json.dump(output, f, indent=2, ensure_ascii=False)
+def _append_lang_code(url, language_code):
+    return f"{url.rstrip('/')}/{language_code}/"
 
 
-class Source:
-    def __init__(self, url=None, new_url=None, extractor=None):
-        self.url = url
-        self.new_url = new_url
-        self.extractor = extractor()
-
-    def extract(self):
-        return self.extractor.process(self)
-
-
-def run_scrape(version="latest", langs=("en", "es", "fr"), url=None, new_url=None):
-
-    if not url:
-        url = "https://standard.open-contracting.org/{}/".format(version)
-
-    for lang in langs:
-        lang_url = url.rstrip("/") + "/" + lang + "/"
-        new_lang_url = None
+def run_scrape(version, langs, url, new_url):
+    for language_code in langs:
+        lang_url = _append_lang_code(url, language_code)
         if new_url:
-            new_lang_url = new_url.rstrip("/") + "/" + lang + "/"
+            new_lang_url = _append_lang_code(new_url, language_code)
+        else:
+            new_lang_url = None
 
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            extract_file = os.path.join(tmpdirname, "extract.json")
-            extract = Extract(extract_file)
-            extract.add_source(
-                Source(url=lang_url, new_url=new_lang_url, extractor=ExtractSphinx)
-            )
-            extract.go()
-            load(
-                base_url=(new_lang_url or lang_url),
-                language=LANG_MAP.get(lang, "standard"),
-                extract_file=extract_file,
-                lang_code=lang,
-            )
+        results = process(lang_url, new_lang_url)
+
+        load(LANG_MAP.get(language_code, "standard"), new_lang_url or lang_url, results, language_code)
+
+
+def load(language, base_url, results, language_code):
+    elasticsearch = Elasticsearch()
+    es_index = "standardsearch_{}".format(language_code)
+    doc_type = "results"
+
+    if not elasticsearch.indices.exists(es_index):
+        elasticsearch.indices.create(index=es_index, body={
+            "mappings": {
+                doc_type: {
+                    "_all": {"analyzer": language},
+                    "properties": {
+                        "text": {"type": "text", "analyzer": language},
+                        "title": {"type": "text", "analyzer": language},
+                        "base_url": {"type": "keyword"},
+                    },
+                },
+            },
+        })
+
+    elasticsearch.delete_by_query(
+        index=es_index,
+        doc_type=doc_type,
+        # In our data store, we store everything with a base_url with an http address,
+        # ..... so if we get a request with https, change it!
+        body={"query": {"term": {"base_url": get_http_version_of_url(base_url)}}},
+    )
+
+    for result in results:
+        result["base_url"] = get_http_version_of_url(result["base_url"])
+        elasticsearch.index(index=es_index, doc_type=doc_type, id=result["url"], body=result)

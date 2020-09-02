@@ -72,18 +72,15 @@ def extract_page(url, base_url, new_url):
     return page_results, next_url
 
 
-class ExtractSphinx:
-    def process(self, source):
-        results = []
-        last_url = source.url
-        page_results, next_url = extract_page(source.url, source.url, source.new_url)
-        results.extend(page_results)
+def process(url, new_url):
+    results = []
+    last_url = url
+    page_results, next_url = extract_page(url, url, new_url)
+    results.extend(page_results)
 
-        while next_url:
-            full_next_url = urljoin(last_url, next_url)
-            page_results, next_url = extract_page(
-                urljoin(last_url, next_url), source.url, source.new_url
-            )
-            results.extend(page_results)
-            last_url = full_next_url
-        return results
+    while next_url:
+        full_next_url = urljoin(last_url, next_url)
+        page_results, next_url = extract_page(urljoin(last_url, next_url), url, new_url)
+        results.extend(page_results)
+        last_url = full_next_url
+    return results
