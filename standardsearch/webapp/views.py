@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 from django.conf import settings
 from django.http import JsonResponse
 
-from standardsearch.etl.ocds import run_scrape as ocds_run_scrape
+from standardsearch.etl.ocds import run_scrape
 from standardsearch.utils import get_http_version_of_url
 
 
@@ -87,7 +87,7 @@ def index_ocds(request):
         if index_version:
             new_url = "https://standard.open-contracting.org/{}/".format(index_version)
         try:
-            ocds_run_scrape(version=version, url=url, new_url=new_url, langs=langs)
+            run_scrape(version=version, url=url, new_url=new_url, langs=langs)
         except Exception as e:
             error = "{} while retrieving {}".format(e, url)
 
