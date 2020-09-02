@@ -83,9 +83,3 @@ Pass:
 
 * `q`: `release package`
 * `base_url`: `https://standard.open-contracting.org/latest/en/`
-
-## HTTP or HTTPS?
-
-The software assumes the content on the HTTP and HTTPS versions of a website are the same.
-
-If a request was made to index a HTTP site, but a user searches against a HTTPS (or vice versa), that should not matter and it should just work.
