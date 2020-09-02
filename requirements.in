@@ -1,5 +1,5 @@
 beautifulsoup4
-django
+django<2.1
 django-environ
 elasticsearch<7
 html5lib
