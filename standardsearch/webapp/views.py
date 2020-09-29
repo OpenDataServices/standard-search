@@ -57,7 +57,7 @@ def _respond(content):
 
 
 def search_v1(request):
-    search = request.GET.get("q", "")
+    q = request.GET.get("q", "")
     base_url = request.GET.get("base_url", "")
 
     # We use base_url to decide which set of documents to search,
