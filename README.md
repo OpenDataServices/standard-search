@@ -152,6 +152,7 @@ NOTE: This is not in full working order and needs tweaks! See pull request.
     vagrant up
     vagrant ssh
     cd /vagrant
+    source .ve/bin/activate
     python3 ocds-doc-search-cli.py -u http://localhost:6060/   # this indexes to elasticsearch
     python3 manage.py runserver 0.0.0.0:5000
 
